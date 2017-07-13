@@ -15,5 +15,7 @@ mex is a debugging extension that was developed by Microsoft to be used internal
 ### pykd
 pykd is an extension that allows you to control WinDbg via Python modules. This is particularly useful if you need to dynamically invoke commands based on the output of some previous commands. Obviously, this requires Python.
 
+To install you need the pykd bootstrapper, Python 2.7, and the python module pykd
+
 ### NetExt
 NetExt provides SQL like commands that make advanced searching and filtering easy inside WinDbg.
