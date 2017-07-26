@@ -76,7 +76,7 @@ The call to `!mu` in the below example is just to force sosex to load the approp
 ### Objects
  - `!windex -type MyCompanyName.NameSpace.Type` finds instances of a specific type
  - `!refs addr` find references to and from the object at addr
- - `!mroots -all addr`
+ - `!mroots -all addr` find all direct and indirect roots for the object at addr
  - `!dumpobj addr` dump the fields of an object at addr 
 
 ### Strings
@@ -96,6 +96,10 @@ The call to `!mu` in the below example is just to force sosex to load the approp
  - `!dumpstack` view managed and native stack frames
  - `!dumpstack -EE` view managed stacks
  - `!EEStack` view managed and native stacks
+
+### Heap Information
+ - `!eeheap` find summary information on all heaps
+ - `!wheap -detailsonly` a nicer summary for heaps
 
 ## Misc
  - `.cls` clears the screen
