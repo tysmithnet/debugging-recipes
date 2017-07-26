@@ -3,8 +3,13 @@ This is a collection of useful snippets and pieces of advice on routine tasks wh
  - sos
  - sosex
  - mex
+ - pykd
 
 My goal is to provide a number of correct solutions for each particular use case. Please feel free to submit a PR if you have other methods.
+
+## Loading the correct DAC
+The DAC is the library that allows WinDbg to make sense of the CLR's internals.
+To load the correct version of the DAC use: `.cordll -ve -u -l`
 
 ## Loading Extensions
 The call to `!mu` in the below example is just to force sosex to load the appropriate version of sos for you. You could also just load the correctly version if you know where it is.
@@ -56,7 +61,7 @@ The call to `!mu` in the below example is just to force sosex to load the approp
  - `!grep -r CantFindMe.dll !grep -r ^Assembly !dumpdomain` find a specific assembly
 
 ### Modules
- - `!ul !grep -r dll$ !grep -r "Module Name" -v !grep -r ^Assembly -v !grep -r "Module Name" -until ^Assembly !dumpdomain` list all modules loaded into all assemblies in all app domains
+ - `!ul !grep -r dll$ !grep -r "Module Name" -v !grep -r ^Assembly -v !grep -r "Module Name" -until ^Assembly !dumpdomain` find a specific module
  - `!ul !grep -r SomethingICareAbout.dll$ !grep -r "Module Name" -v !grep -r ^Assembly -v !grep -r "Module Name" -until ^Assembly !dumpdomain` find a specific module
 
 
@@ -66,12 +71,32 @@ The call to `!mu` in the below example is just to force sosex to load the approp
             1:  00007ff859bd7360            C:\Windows\Microsoft.NET\Framework64\v4.0.30319\Temporary ASP.NET Files\asyncweb\a4686693\90c46df1\assembly\dl3\837f8b33\003e9a1b_36abce01\Microsoft.ScriptManager.MSAjax.dll
 
     + USUALLY there is a 1:1 relationship between assemblies and modules, but this not always true
-  - `!dumpmodule -mt 00007ff859c73b48` list module info including dependent and depended types   
+  - `!dumpmodule -mt 00007ff859c73b48` list module info including dependent and depended types  
+  
 ### Objects
  - `!windex -type MyCompanyName.NameSpace.Type` finds instances of a specific type
- 
+ - `!refs addr` find references to and from the object at addr
+ - `!mroots -all addr`
+ - `!dumpobj addr` dump the fields of an object at addr 
+
+### Strings
+ - `!sosex.strings` list all strings
+ - `!sosex.strings /g:2 /n:1024` list all strings in gen 2 that are 1024+ bytes
+ - `!sort -f 3 -ai !sosex.strings` list all strings in sorted order
+
+### Arrays
+ - `!da addr` dump information about the array at `addr`
+ - `!da -details` dump the array and its elements 
+
 ### Types 
  - `!dumpmodule -mt 00007ff859c73b48` list all types in a module
+ - `lmDvm MyModuleName` provides a formatted list of output about a module 
 
-### Misc
+### Viewing Code & Instructions
+ - `!dumpstack` view managed and native stack frames
+ - `!dumpstack -EE` view managed stacks
+ - `!EEStack` view managed and native stacks
+
+## Misc
  - `.cls` clears the screen
+ - `sxe ld clr` break when the CLR is loaded into the process address space
