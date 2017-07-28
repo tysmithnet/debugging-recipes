@@ -3,7 +3,7 @@ This is a collection of useful snippets and pieces of advice on routine tasks wh
  - sos
  - sosex
  - mex
- - pykd
+ - netext
 
 My goal is to provide a number of correct solutions for each particular use case. Please feel free to submit a PR if you have other methods.
 
