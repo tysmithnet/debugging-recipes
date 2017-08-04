@@ -19,6 +19,7 @@ To find these values its best to take the following actions:
 1. Get the low and high addresses for the memory range on the stack you are interested
    - The stack frames should give you an idea of how much you want to search, but you could always just do stack base and stack limit
 1. Use CLRMd to write a small script that will inspect 32/64 bit values for you (don't forget to add `Microsoft.Diagnostics.Runtime` to the nuget packages(`CLRMd`))
+     - I find LINQPad to be especially useful here
      - The following script will search whatever memory range you have decided on for some predetermined values
        - This would be useful in scenarios where you have an ELK stack or SPLUNK license and have some traces of ids of interest
      - 
