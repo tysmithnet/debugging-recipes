@@ -20,40 +20,40 @@ To find these values its best to take the following actions:
    - The stack frames should give you an idea of how much you want to search, but you could always just do stack base and stack limit
 1. Use CLRMd to write a small script that will inspect 32/64 bit values for you (don't forget to add `Microsoft.Diagnostics.Runtime` to the nuget packages(`CLRMd`))
      - I find LINQPad to be especially useful here
-     - The following script will search whatever memory range you have decided on for some predetermined values
+     - The following script will find "ids" in some predetermined range (whatever makes sense)
        - This would be useful in scenarios where you have an ELK stack or SPLUNK license and have some traces of ids of interest
      - 
 
-        using (DataTarget dt = DataTarget.LoadCrashDump(@"C:\path\to\mycrash.dmp"))
-        {
-          // you get these values from looking at the stack trace for some stack that looks interesting
-          long lo = 0x0000003cfc9fe6d0;
-          long hi = 0x0000003cfc9fe9d0;
-          
-          // calculate how big the buffer has to be
-          long bufferSize = hi - lo;
-
-          byte[] buffer = new byte[bufferSize];
-          
-          // if you are looking for some potential values put them here
-          long[] potentials = new long[] { 0x3d09537, 0x10200, 0x313, 0x41412 };
-          int bytesRead;
-          
-          // read from virtual memory into the buffer
-          dt.ReadProcessMemory((ulong)lo, buffer, (int)bufferSize, out bytesRead);
-          Dictionary<long, int> count = new Dictionary<long, int>();
-          
-          // we are assuming 8 byte pointers here, but you could adjust if necessary
-          for (int i = 0; i < bytesRead; i += 8)
+          using (DataTarget dt = DataTarget.LoadCrashDump(@"C:\debug\x64\HelloWorld.exe_170803_222445.dmp"))
           {
-            long value = BitConverter.ToInt64(buffer, i);
+            // you get these values from looking at the stack trace for some stack that looks interesting
+            long lo = 0x0000003cfc9fe6d0;
+            long hi = 0x0000003cfc9fe9d0;
+            
+            // calculate how big the buffer has to be
+            long bufferSize = hi - lo;
 
-            if (potentials.Contains(value))
+            byte[] buffer = new byte[bufferSize];
+            int bytesRead;
+            
+            
+            long lowerLimit = 1000, upperLimit = 99999999;
+            
+            // read from virtual memory into the buffer
+            dt.ReadProcessMemory((ulong)lo, buffer, (int)bufferSize, out bytesRead);
+            Dictionary<long, int> count = new Dictionary<long, int>();
+            
+            // we are assuming 8 byte pointers here, but you could adjust if necessary
+            for (int i = 0; i < bytesRead; i += 8)
             {
-              if(!count.ContainsKey(value))
-                count.Add(value, 0);
-              count[value]++;
+              long value = BitConverter.ToInt64(buffer, i);
+              if (value > lowerLimit && value < upperLimit)
+              {
+                if (!count.ContainsKey(value))
+                  count.Add(value, 0);
+                count[value]++;
+              }
             }
+            count.OrderByDescending(x => x.Value).Dump();
           }
-          count.OrderByDescending(x => x.Value).Dump();
-        }
+
