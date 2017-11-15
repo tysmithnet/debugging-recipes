@@ -74,7 +74,8 @@ The call to `!mu` in the below example is just to force sosex to load the approp
   - `!dumpmodule -mt 00007ff859c73b48` list module info including dependent and depended types  
   
 ### Objects
- - `!wheap -type MyCompanyName.NameSpace.Type` finds instances of a specific type
+ - `!windex -type MyCompanyName.NameSpace.Type` finds instances of a specific type
+ - `!dumpgen 0 -stat -type NHibernate` gets stats on types that contain NHibernate in gen0
  - `!refs addr` find references to and from the object at addr
  - `!mroots -all addr` find all direct and indirect roots for the object at addr
  - `!dumpobj addr` dump the fields of an object at addr 
