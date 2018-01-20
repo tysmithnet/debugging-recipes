@@ -95,10 +95,13 @@ The call to `!mu` in the below example is just to force sosex to load the approp
 - `!dumpmodule -mt 00007ff859c73b48` list all types in a module
 - `lmDvm MyModuleName` provides a formatted list of output about a module 
 
-### Viewing Code & Instructions
+### Threads & Stacks
 - `!dumpstack` view managed and native stack frames
 - `!dumpstack -EE` view managed stacks
 - `!EEStack` view managed and native stacks
+- `!mex.foreachmatchingstack -s NtWaitForWorkViaWorkerFactory k` - displays the call stack for any stack that has matches the regex NtWaitForWorkViaWorkerFactory
+
+
 
 ### Heap Information
 - `!eeheap` find summary information on all heaps
