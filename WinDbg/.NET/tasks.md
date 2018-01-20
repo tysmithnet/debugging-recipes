@@ -103,10 +103,12 @@ The call to `!mu` in the below example is just to force sosex to load the approp
 ### Heap Information
 - `!eeheap` find summary information on all heaps
 - `!wheap -detailsonly` a nicer summary for heaps
-
+- `!gchi` displays how much data is in each generation per heap in a nice table format
 ## Misc
 - `.cls` clears the screen
-- `sxe ld clr` break when the CLR is loaded into the process address space
+- `sxe ld clr` notify the debugging engine when clr.dll is loaded and throw and exception to break execution
+  - 
 - `!mex.addr address` find information about what an address is
 - `lma address` determine what module an address belongs to
   - useful if you find what appears to be a code address in memory
+

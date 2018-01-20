@@ -21,3 +21,9 @@ You can also view memory in the command window using commands from the `d` famil
 - `!mu` view MSIL interleved with assembly at the current instruction pointer
 - `u addr` view disassembly at addr 
  
+# Exports
+- `x /D /f KERNEL32!GetSystemT*` - look for exports in Kernel32 that start with GetSystemT
+
+ # BreakPoints
+- `sxe ld clr` - break when clr.dll is loaded
+- `bm KERNEL32!GetSystemT*` - set a breakpoint on all functions in Kernel32 that start with GetSystemT
