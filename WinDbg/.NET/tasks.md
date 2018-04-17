@@ -19,18 +19,19 @@ The call to `!mu` in the below example is just to force sosex to load the approp
     .load mex
 
 ## Getting Help
- - `!ext.help` where `ext` is a loaded extension
-    + `!sos.help`
-    + `!sosex.help`
-    + `!mex.help`
-      + `!mex.help category` where `category` is dotnet, utilities, etc
-      + `!mex.somemexcommand -?` where `somemexcommand` is a mex command
-    + `!psscor4.help`
-    + `!netext.help`
- - `.hh` will load the debugging manual that ships with the Windows Driver Kit (WDK)
+- `!ext.help` where `ext` is a loaded extension
+  + `!sos.help`
+  + `!sosex.help`
+  + `!mex.help`
+    + `!mex.help category` where `category` is dotnet, utilities, etc
+    + `!mex.somemexcommand -?` where `somemexcommand` is a mex command
+  + `!psscor4.help`
+  + `!netext.help`
+    + `!whelp command` 
+- `.hh` will load the debugging manual that ships with the Windows Driver Kit (WDK)
 ## Finding things
 ### AppDomains
- - `!dumpdomain` dumps all domains and their loaded assemblies and the modules contained in those assemblies
+- `!dumpdomain` dumps all domains and their loaded assemblies and the modules contained in those assemblies
 
         Domain 2:           000001aad6de5730
         LowFrequencyHeap:   000001aad6de5f28
@@ -47,10 +48,10 @@ The call to `!mu` in the below example is just to force sosex to load the approp
 
         ...
 
- - `!dumpdomain 000001aad7678f60` dumps the app domain at the specified address
+- `!dumpdomain 000001aad7678f60` dumps the app domain at the specified address
 
 ### Assemblies
- - `!ul !grep -r ^Assembly !dumpdomain` list all assemblies loaded into all app domains
+- `!ul !grep -r ^Assembly !dumpdomain` list all assemblies loaded into all app domains
 
         1:  Assembly:   000001aad767adc0 [C:\Windows\Microsoft.NET\Framework64\v4.0.30319\Temporary ASP.NET Files\asyncweb\a4686693\90c46df1\assembly\dl3\6a8efc97\00c691c4_1b11ce01\Antlr3.Runtime.dll]
         1:  Assembly:   000001aad767b120 [C:\Windows\Microsoft.NET\Framework64\v4.0.30319\Temporary ASP.NET Files\asyncweb\a4686693\90c46df1\assembly\dl3\0aed2a39\0092614d_9dafcf01\Newtonsoft.Json.dll]
@@ -58,11 +59,11 @@ The call to `!mu` in the below example is just to force sosex to load the approp
         2:  Assembly:   000001aad75c8cc0 [C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\SMDiagnostics\v4.0_4.0.0.0__b77a5c561934e089\SMDiagnostics.dll]
         2:  Assembly:   000001aad7420d30 [C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\System.ServiceModel.Activities\v4.0_4.0.0.0__31bf3856ad364e35\System.ServiceModel.Activities.dll]
 
- - `!grep -r CantFindMe.dll !grep -r ^Assembly !dumpdomain` find a specific assembly
+- `!grep -r CantFindMe.dll !grep -r ^Assembly !dumpdomain` find a specific assembly
 
 ### Modules
- - `!ul !grep -r dll$ !grep -r "Module Name" -v !grep -r ^Assembly -v !grep -r "Module Name" -until ^Assembly !dumpdomain` find a specific module
- - `!ul !grep -r SomethingICareAbout.dll$ !grep -r "Module Name" -v !grep -r ^Assembly -v !grep -r "Module Name" -until ^Assembly !dumpdomain` find a specific module
+- `!ul !grep -r dll$ !grep -r "Module Name" -v !grep -r ^Assembly -v !grep -r "Module Name" -until ^Assembly !dumpdomain` find a specific module
+- `!ul !grep -r SomethingICareAbout.dll$ !grep -r "Module Name" -v !grep -r ^Assembly -v !grep -r "Module Name" -until ^Assembly !dumpdomain` find a specific module
 
 
             1:  00007ff859bd5990            C:\Windows\Microsoft.NET\Framework64\v4.0.30319\Temporary ASP.NET Files\asyncweb\a4686693\90c46df1\assembly\dl3\3951700f\001f9021_36abce01\Microsoft.ScriptManager.WebForms.dll
@@ -71,37 +72,43 @@ The call to `!mu` in the below example is just to force sosex to load the approp
             1:  00007ff859bd7360            C:\Windows\Microsoft.NET\Framework64\v4.0.30319\Temporary ASP.NET Files\asyncweb\a4686693\90c46df1\assembly\dl3\837f8b33\003e9a1b_36abce01\Microsoft.ScriptManager.MSAjax.dll
 
     + USUALLY there is a 1:1 relationship between assemblies and modules, but this not always true
-  - `!dumpmodule -mt 00007ff859c73b48` list module info including dependent and depended types  
+- `!dumpmodule -mt 00007ff859c73b48` list module info including dependent and depended types  
   
 ### Objects
- - `!windex -type MyCompanyName.NameSpace.Type` finds instances of a specific type
- - `!dumpgen 0 -stat -type NHibernate` gets stats on types that contain NHibernate in gen0
- - `!refs addr` find references to and from the object at addr
- - `!mroots -all addr` find all direct and indirect roots for the object at addr
- - `!dumpobj addr` dump the fields of an object at addr 
+- `!windex -type *WhatYourLookingFor*` finds instances of the type that matches the wildcard string
+  - Prefer this to `!wheap` because `wheap` doesn't index
+- `!wheap -type *MyCompanyName.NameSpace.Type` finds instances of a specific type
+- `!refs addr` find references to and from the object at addr
+- `!mroots -all addr` find all direct and indirect roots for the object at addr
+- `!dumpobj addr` dump the fields of an object at addr 
 
 ### Strings
- - `!sosex.strings` list all strings
- - `!sosex.strings /g:2 /n:1024` list all strings in gen 2 that are 1024+ bytes
- - `!sort -f 3 -ai !sosex.strings` list all strings in sorted order
+- `!sosex.strings` list all strings
+- `!sosex.strings /g:2 /n:1024` list all strings in gen 2 that are 1024+ bytes
+- `!sort -f 3 -ai !sosex.strings` list all strings in sorted order
 
 ### Arrays
- - `!da addr` dump information about the array at `addr`
- - `!da -details` dump the array and its elements 
+- `!da addr` dump information about the array at `addr`
+- `!da -details` dump the array and its elements 
 
 ### Types 
- - `!dumpmodule -mt 00007ff859c73b48` list all types in a module
- - `lmDvm MyModuleName` provides a formatted list of output about a module 
+- `!dumpmodule -mt 00007ff859c73b48` list all types in a module
+- `lmDvm MyModuleName` provides a formatted list of output about a module 
 
 ### Viewing Code & Instructions
- - `!dumpstack` view managed and native stack frames
- - `!dumpstack -EE` view managed stacks
- - `!EEStack` view managed and native stacks
+- `!dumpstack` view managed and native stack frames
+- `!dumpstack -EE` view managed stacks
+- `!EEStack` view managed and native stacks
 
 ### Heap Information
- - `!eeheap` find summary information on all heaps
- - `!wheap -detailsonly` a nicer summary for heaps
-
+- `!eeheap` find summary information on all heaps
+- `!wheap -detailsonly` a nicer summary for heaps
+- `!gchi` displays how much data is in each generation per heap in a nice table format
 ## Misc
- - `.cls` clears the screen
- - `sxe ld clr` break when the CLR is loaded into the process address space
+- `.cls` clears the screen
+- `sxe ld clr` notify the debugging engine when clr.dll is loaded and throw and exception to break execution
+  - 
+- `!mex.addr address` find information about what an address is
+- `lma address` determine what module an address belongs to
+  - useful if you find what appears to be a code address in memory
+
