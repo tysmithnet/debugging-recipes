@@ -110,7 +110,6 @@ The call to `!mu` in the below example is just to force sosex to load the approp
 ## Misc
 - `.cls` clears the screen
 - `sxe ld clr` notify the debugging engine when clr.dll is loaded and throw and exception to break execution
-  - 
 - `!mex.addr address` find information about what an address is
 - `lma address` determine what module an address belongs to
   - useful if you find what appears to be a code address in memory
